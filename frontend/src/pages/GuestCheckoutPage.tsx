@@ -27,7 +27,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import PaymentForm from '../components/Payment/PaymentForm';
+import SimplifiedPaymentForm from '../components/Payment/SimplifiedPaymentForm';
 
 interface GuestInfo {
   firstName: string;
@@ -382,10 +382,8 @@ const GuestCheckoutPage: React.FC = () => {
                   </Alert>
                 )}
                 
-                <PaymentForm
-                  orderId={orderId}
+                <SimplifiedPaymentForm
                   amount={total}
-                  currency="USD"
                   onPaymentSuccess={handlePaymentSuccess}
                   onPaymentError={handlePaymentError}
                 />

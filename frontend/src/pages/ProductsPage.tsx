@@ -40,6 +40,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../store';
 import { addItem } from '../store/slices/cartSlice';
+import NotificationSnackbar from '../components/common/NotificationSnackbar';
 
 interface Product {
   id: string;
@@ -77,6 +78,11 @@ const ProductsPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(12);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error' | 'warning' | 'info'
+  });
 
   // Sample products data with extensive electronics catalog
   const sampleProducts: Product[] = [
@@ -1265,6 +1271,24 @@ const ProductsPage: React.FC = () => {
       productId: product.id,
       quantity: 1
     }));
+    
+    // Show success notification
+    setNotification({
+      open: true,
+      message: `${product.name} added to cart!`,
+      severity: 'success'
+    });
+  };
+
+  const handleBuyNow = (product: Product) => {
+    // Add to cart first
+    dispatch(addItem({
+      productId: product.id,
+      quantity: 1
+    }));
+    
+    // Navigate directly to cart for checkout
+    navigate('/cart');
   };
 
   const toggleFavorite = (productId: string) => {
@@ -1576,23 +1600,44 @@ const ProductsPage: React.FC = () => {
                 </CardContent>
 
                 <Box sx={{ p: 2, pt: 0 }}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={8}>
+                  <Grid container spacing={1} sx={{ mb: 1 }}>
+                    <Grid item xs={12}>
                       <Button
                         fullWidth
                         variant="contained"
                         startIcon={<CartIcon />}
-                        onClick={() => handleAddToCart(product)}
+                        onClick={() => handleBuyNow(product)}
                         disabled={!product.inStock}
+                        sx={{
+                          background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                          '&:hover': {
+                            background: 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
+                          }
+                        }}
                       >
-                        {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                        {product.inStock ? 'Buy Now' : 'Out of Stock'}
                       </Button>
                     </Grid>
-                    <Grid item xs={4}>
+                  </Grid>
+                  <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        startIcon={<CartIcon />}
+                        onClick={() => handleAddToCart(product)}
+                        disabled={!product.inStock}
+                        size="small"
+                      >
+                        Add to Cart
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6}>
                       <Button
                         fullWidth
                         variant="outlined"
                         onClick={() => navigate(`/products/${product.id}`)}
+                        size="small"
                       >
                         <ViewIcon />
                       </Button>
@@ -1630,6 +1675,14 @@ const ProductsPage: React.FC = () => {
       )}
 
       <FilterDrawer />
+
+      {/* Notification Snackbar */}
+      <NotificationSnackbar
+        open={notification.open}
+        message={notification.message}
+        severity={notification.severity}
+        onClose={() => setNotification({ ...notification, open: false })}
+      />
     </Box>
   );
 };

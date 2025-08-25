@@ -12,7 +12,7 @@ import {
   Chip,
   IconButton,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   SmartToy,
   Recommend,
@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../store/slices/cartSlice';
+import NotificationSnackbar from '../components/common/NotificationSnackbar';
 
 interface FeaturedProduct {
   id: string;
@@ -38,7 +39,13 @@ interface FeaturedProduct {
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error' | 'warning' | 'info'
+  });
 
   useEffect(() => {
     // AI-curated featured products for electronics enthusiasts
@@ -121,6 +128,24 @@ const HomePage: React.FC = () => {
       productId: product.id,
       quantity: 1
     }));
+    
+    // Show success notification
+    setNotification({
+      open: true,
+      message: `${product.name} added to cart!`,
+      severity: 'success'
+    });
+  };
+
+  const handleBuyNow = (product: FeaturedProduct) => {
+    // Add to cart first
+    dispatch(addItem({
+      productId: product.id,
+      quantity: 1
+    }));
+    
+    // Navigate directly to cart for checkout
+    navigate('/cart');
   };
   const features = [
     {
@@ -333,11 +358,30 @@ const HomePage: React.FC = () => {
                     )}
                   </Box>
 
+                  <Grid container spacing={1} sx={{ mb: 1 }}>
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        size="small"
+                        startIcon={<CartIcon />}
+                        onClick={() => handleBuyNow(product)}
+                        sx={{
+                          background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                          '&:hover': {
+                            background: 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
+                          }
+                        }}
+                      >
+                        Buy Now
+                      </Button>
+                    </Grid>
+                  </Grid>
                   <Grid container spacing={1}>
                     <Grid item xs={8}>
                       <Button
                         fullWidth
-                        variant="contained"
+                        variant="outlined"
                         size="small"
                         startIcon={<CartIcon />}
                         onClick={() => handleAddToCart(product)}
@@ -399,6 +443,14 @@ const HomePage: React.FC = () => {
           </Box>
         </Container>
       </Box>
+
+      {/* Notification Snackbar */}
+      <NotificationSnackbar
+        open={notification.open}
+        message={notification.message}
+        severity={notification.severity}
+        onClose={() => setNotification({ ...notification, open: false })}
+      />
     </Box>
   );
 };

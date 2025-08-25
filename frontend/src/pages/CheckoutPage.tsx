@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PaymentForm from '../components/Payment/PaymentForm';
+import SimplifiedPaymentForm from '../components/Payment/SimplifiedPaymentForm';
 import { 
   ShoppingBag, 
   MapPin, 
@@ -333,10 +333,8 @@ const CheckoutPage: React.FC = () => {
                   </div>
                 )}
                 
-                <PaymentForm
-                  orderId={order.id}
+                <SimplifiedPaymentForm
                   amount={order.total}
-                  currency={order.currency}
                   onPaymentSuccess={handlePaymentSuccess}
                   onPaymentError={handlePaymentError}
                 />

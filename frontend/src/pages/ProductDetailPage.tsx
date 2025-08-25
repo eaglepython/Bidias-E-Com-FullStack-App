@@ -164,6 +164,19 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
+  const handleBuyNow = () => {
+    if (product) {
+      // Add to cart first
+      dispatch(addItem({
+        productId: product._id,
+        quantity
+      }));
+      
+      // Navigate directly to cart for checkout
+      navigate('/cart');
+    }
+  };
+
   const handleWishlistToggle = async () => {
     if (!user) {
       navigate('/login');
@@ -395,32 +408,54 @@ const ProductDetailPage: React.FC = () => {
             </Box>
 
             {/* Action Buttons */}
-            <Box display="flex" gap={2} mb={3}>
+            <Box display="flex" flexDirection="column" gap={2} mb={3}>
+              {/* Primary Buy Now Button */}
               <Button
                 variant="contained"
                 size="large"
                 startIcon={<CartIcon />}
-                onClick={handleAddToCart}
+                onClick={handleBuyNow}
                 disabled={!product.inStock}
-                sx={{ flex: 1 }}
+                sx={{ 
+                  background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
+                  },
+                  py: 1.5,
+                  fontSize: '1.1rem'
+                }}
               >
-                {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                {product.inStock ? 'Buy Now' : 'Out of Stock'}
               </Button>
               
-              <IconButton
-                onClick={handleWishlistToggle}
-                color={isInWishlist ? 'error' : 'default'}
-                sx={{ border: 1, borderColor: 'grey.300' }}
-              >
-                {isInWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-              </IconButton>
-              
-              <IconButton
-                onClick={handleShare}
-                sx={{ border: 1, borderColor: 'grey.300' }}
-              >
-                <ShareIcon />
-              </IconButton>
+              {/* Secondary Actions */}
+              <Box display="flex" gap={2}>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  startIcon={<CartIcon />}
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock}
+                  sx={{ flex: 1 }}
+                >
+                  Add to Cart
+                </Button>
+                
+                <IconButton
+                  onClick={handleWishlistToggle}
+                  color={isInWishlist ? 'error' : 'default'}
+                  sx={{ border: 1, borderColor: 'grey.300' }}
+                >
+                  {isInWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                </IconButton>
+                
+                <IconButton
+                  onClick={handleShare}
+                  sx={{ border: 1, borderColor: 'grey.300' }}
+                >
+                  <ShareIcon />
+                </IconButton>
+              </Box>
             </Box>
 
             {/* Stock Status */}
