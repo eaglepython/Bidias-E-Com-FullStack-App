@@ -1,0 +1,26 @@
+{
+  "name": "sophisticated-ecommerce-capstone",
+  "version": "1.0.0",
+  "description": "Advanced e-commerce platform with AI features",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install:frontend && npm run install:backend && npm run install:ai",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install", 
+    "install:ai": "cd ai-services/recommendation-engine && pip install -r requirements.txt",
+    "dev": "./scripts/dev.sh",
+    "build": "./scripts/build.sh",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "setup": "./scripts/setup.sh",
+    "deploy": "./scripts/deploy.sh"
+  },
+  "keywords": ["ecommerce", "ai", "machine-learning", "nodejs", "react"],
+  "author": "Your Name",
+  "license": "MIT"
+}
