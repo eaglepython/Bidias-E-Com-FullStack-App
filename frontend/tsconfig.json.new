@@ -20,6 +20,8 @@
     
     /* Linting */
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     
     /* Path mapping */
@@ -44,7 +46,8 @@
     "types": ["vitest/globals"]
   },
   "include": [
-    "src"
+    "src",
+    "vite.config.ts"
   ],
   "references": [
     {

@@ -132,4 +132,55 @@ Bidias-E-Com-FullStack-App/
 
 ---
 
+## 🛠️ Backend Best Practices & Quickstart
+
+### 📦 **Backend Folder Structure**
+
+```
+backend/
+├── src/                # Source code (controllers, models, routes, services, etc.)
+├── tests/              # Unit and integration tests
+├── package.json        # Backend dependencies & scripts
+├── tsconfig.json       # TypeScript configuration
+├── jest.config.js      # Jest test configuration
+├── Dockerfile          # Docker container setup
+└── .env.example        # Environment variables template
+```
+
+### 🚀 **Backend Development Workflow**
+
+1. **Configure Environment**
+	- Copy `.env.example` to `.env` and fill in secrets (DB, JWT, SMTP, etc.)
+2. **Install Dependencies**
+	- `cd backend && npm install`
+3. **Run in Development**
+	- `npm run dev` (uses Nodemon + ts-node for live reload)
+4. **Build for Production**
+	- `npm run build` (outputs to `dist/`)
+5. **Start Production Server**
+	- `npm start` (runs compiled JS from `dist/`)
+6. **Run Tests**
+	- `npm test` (Jest)
+	- `npm run test:watch` (watch mode)
+	- `npm run test:ci` (coverage for CI)
+7. **Lint & Format**
+	- `npm run lint` (ESLint)
+	- `npm run format` (Prettier)
+8. **Type Check**
+	- `npm run type-check`
+9. **Seed/Migrate Data**
+	- `npm run seed` (seed sample data)
+	- `npm run migrate` (run DB migrations)
+
+### 🧑‍💻 **Best Practices**
+- **TypeScript Strictness**: Enforced for safety and maintainability
+- **MVC Pattern**: Clear separation of concerns
+- **Environment Variables**: All secrets/config in `.env` (never commit real secrets)
+- **Testing**: Unit, integration, and CI coverage with Jest
+- **Linting/Formatting**: Consistent code style with ESLint & Prettier
+- **Docker Ready**: Containerized for deployment
+- **API Documentation**: Keep docs in `/docs/api/`
+
+---
+
 **📝 Note**: This structure follows industry best practices for scalable, maintainable full-stack applications while maintaining the NPower capstone project requirements.

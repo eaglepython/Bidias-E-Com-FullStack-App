@@ -47,13 +47,29 @@ interface Product {
   _id: string;
   name: string;
   description: string;
-  price: number;
-  images: string[];
+  shortDescription: string;
+  price: {
+    original: number;
+    current: number;
+    currency: string;
+  };
+  images: Array<{
+    url: string;
+    alt: string;
+    isPrimary: boolean;
+  }>;
   category: string;
   brand: string;
-  rating: number;
-  reviewCount: number;
-  inStock: boolean;
+  ratings: {
+    average: number;
+    count: number;
+    distribution: Record<string, number>;
+  };
+  inventory: {
+    stock: number;
+    lowStockThreshold: number;
+    status: string;
+  };
   features: string[];
   specifications: any;
   reviews: any[];
@@ -282,6 +298,9 @@ const ProductDetailPage: React.FC = () => {
     );
   }
 
+  // Defensive fallback for images
+  const images = product.images && product.images.length > 0 ? product.images : [{ url: '', alt: product.name, isPrimary: true }];
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Breadcrumbs */}
@@ -310,8 +329,8 @@ const ProductDetailPage: React.FC = () => {
             >
               <CardMedia
                 component="img"
-                image={product.images[selectedImageIndex]}
-                alt={product.name}
+                image={images[selectedImageIndex]?.url}
+                alt={images[selectedImageIndex]?.alt || product.name}
                 sx={{
                   width: '100%',
                   height: 400,
@@ -321,10 +340,9 @@ const ProductDetailPage: React.FC = () => {
                 }}
               />
             </motion.div>
-            
             {/* Image Thumbnails */}
             <Box display="flex" gap={1} flexWrap="wrap">
-              {product.images.map((image, index) => (
+              {images.map((image, index) => (
                 <Box
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
@@ -340,8 +358,8 @@ const ProductDetailPage: React.FC = () => {
                 >
                   <CardMedia
                     component="img"
-                    image={image}
-                    alt={`${product.name} ${index + 1}`}
+                    image={image.url}
+                    alt={image.alt || `${product.name} ${index + 1}`}
                     sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </Box>
@@ -358,14 +376,14 @@ const ProductDetailPage: React.FC = () => {
             </Typography>
             
             <Box display="flex" alignItems="center" gap={2} mb={2}>
-              <Rating value={product.rating} readOnly precision={0.1} />
+              <Rating value={product.ratings?.average || 0} readOnly precision={0.1} />
               <Typography variant="body2" color="text.secondary">
-                ({product.reviewCount} reviews)
+                ({product.ratings?.count || 0} reviews)
               </Typography>
             </Box>
 
             <Typography variant="h5" color="primary" gutterBottom>
-              ${product.price.toFixed(2)}
+              ${product.price?.current?.toFixed(2) || 'N/A'}
             </Typography>
 
             <Typography variant="body1" paragraph>
@@ -415,7 +433,7 @@ const ProductDetailPage: React.FC = () => {
                 size="large"
                 startIcon={<CartIcon />}
                 onClick={handleBuyNow}
-                disabled={!product.inStock}
+                disabled={product.inventory?.status !== 'in_stock'}
                 sx={{ 
                   background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                   '&:hover': {

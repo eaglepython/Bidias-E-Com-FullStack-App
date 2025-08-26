@@ -17,7 +17,7 @@
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend && npm install",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "cd frontend && npm start",
+    "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
     "build": "npm run build:backend && npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
@@ -27,7 +27,8 @@
     "test:backend": "cd backend && npm test",
     "test:frontend": "cd frontend && npm test",
     "seed": "cd backend && npm run seed",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "type-check": "cd frontend && npm run type-check"
   },
   "keywords": [
     "ecommerce",
