@@ -5,7 +5,7 @@ export interface ICategory extends Document {
   name: string;
   description: string;
   slug: string;
-  parentCategory?: string;
+  parentCategory?: mongoose.Types.ObjectId;
   subcategories: Array<{
     name: string;
     slug: string;
@@ -110,7 +110,9 @@ categorySchema.index({ sortOrder: 1 });
 
 // Virtual for full category path
 categorySchema.virtual('fullPath').get(function() {
-  return this.parentCategory ? `${this.parentCategory}/${this.slug}` : this.slug;
+  // For now, return just the slug since parentCategory is an ObjectId
+  // In a real implementation, you'd populate the parent and get its slug
+  return this.slug;
 });
 
 // Static methods
