@@ -443,7 +443,7 @@ const ProductDetailPage: React.FC = () => {
                   fontSize: '1.1rem'
                 }}
               >
-                {product.inStock ? 'Buy Now' : 'Out of Stock'}
+                {product.inventory.status === 'in_stock' ? 'Buy Now' : 'Out of Stock'}
               </Button>
               
               {/* Secondary Actions */}
@@ -453,7 +453,7 @@ const ProductDetailPage: React.FC = () => {
                   size="large"
                   startIcon={<CartIcon />}
                   onClick={handleAddToCart}
-                  disabled={!product.inStock}
+                  disabled={product.inventory.status !== 'in_stock'}
                   sx={{ flex: 1 }}
                 >
                   Add to Cart
@@ -483,11 +483,11 @@ const ProductDetailPage: React.FC = () => {
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  bgcolor: product.inStock ? 'success.main' : 'error.main'
+                  bgcolor: product.inventory.status === 'in_stock' ? 'success.main' : 'error.main'
                 }}
               />
               <Typography variant="body2" color="text.secondary">
-                {product.inStock ? 'In Stock' : 'Out of Stock'}
+                {product.inventory.status === 'in_stock' ? 'In Stock' : 'Out of Stock'}
               </Typography>
             </Box>
           </Box>
@@ -499,7 +499,7 @@ const ProductDetailPage: React.FC = () => {
         <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
           <Tab label="Description" />
           <Tab label="Specifications" />
-          <Tab label={`Reviews (${product.reviewCount})`} />
+          <Tab label={`Reviews (${product.ratings.count})`} />
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
