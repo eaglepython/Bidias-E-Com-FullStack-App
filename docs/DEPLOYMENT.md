@@ -1,52 +1,365 @@
 # 🚀 Deployment Guide
 
-This guide explains how to deploy your Bidias E-Commerce application to various platforms.
+## Overview
 
-## 📋 Deployment Options
+This guide covers deploying the Bidias E-Commerce platform to various cloud platforms. The application consists of a React frontend and Node.js/Express backend with MongoDB and Redis.
 
-### 1. Vercel (Frontend)
-- **Best for**: Frontend deployment
-- **Free tier**: Available
-- **URL**: https://vercel.com
+## 📋 Prerequisites
 
-### 2. Render (Backend)
-- **Best for**: Backend API deployment
-- **Free tier**: Available
-- **URL**: https://render.com
+- Node.js 18+
+- MongoDB database
+- Redis (optional, for caching)
+- Stripe account for payments
+- SMTP service for emails
 
-### 3. Railway
-- **Best for**: Full-stack deployment
-- **Free tier**: Available
-- **URL**: https://railway.app
+## 🏗️ Build Process
 
-## 🔧 Prerequisites
+### Local Build
 
-1. GitHub repository with your code
-2. MongoDB Atlas account (for database)
-3. Stripe account (for payments)
-4. Environment variables configured
+```bash
+# Install all dependencies
+npm run install:all
 
-## 🌐 Environment Variables
+# Build both frontend and backend
+npm run build
+
+# Or build individually
+npm run build:frontend
+npm run build:backend
+```
+
+### Docker Build
+
+```bash
+# Build with Docker Compose
+npm run build:docker
+
+# Or manually
+docker-compose build
+```
+
+## 🌐 Deployment Options
+
+### 1. Vercel (Recommended for Frontend + Backend)
+
+#### Automatic Deployment
+
+1. **Connect Repository**
+   - Go to [Vercel](https://vercel.com)
+   - Import your GitHub repository
+   - Vercel will auto-detect the configuration
+
+2. **Environment Variables**
+   Set these in Vercel dashboard:
+   ```
+   NODE_ENV=production
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   JWT_REFRESH_SECRET=your_refresh_secret
+   JWT_RESET_SECRET=your_reset_secret
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   FRONTEND_URL=https://your-frontend-url.vercel.app
+   ```
+
+3. **Deploy**
+   ```bash
+   npm run deploy:vercel
+   ```
+
+#### Manual Deployment
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+```
+
+### 2. Render
+
+#### Using render.yaml
+
+1. **Connect Repository**
+   - Go to [Render](https://render.com)
+   - Create new service from Git
+   - Select your repository
+
+2. **Services Created**
+   - `ecommerce-backend` (Web Service)
+   - `ecommerce-frontend` (Static Site)
+   - `mongodb` (Database)
+   - `redis` (Cache - optional)
+
+3. **Environment Variables**
+   Set in Render dashboard for backend service:
+   ```
+   NODE_ENV=production
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   FRONTEND_URL=https://your-frontend.onrender.com
+   ```
+
+### 3. Netlify (Frontend Only)
+
+#### Deploy Frontend
+
+```bash
+# Build and deploy
+npm run deploy:netlify
+
+# Or manually
+cd frontend
+npm run build
+netlify deploy --prod --dir=dist
+```
+
+#### Environment Variables for Frontend
+
+```bash
+# In Netlify dashboard or netlify.toml
+REACT_APP_API_URL=https://your-backend-api.com
+REACT_APP_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+```
+
+### 4. Docker Deployment
+
+#### Local Docker
+
+```bash
+# Start all services
+npm run dev:docker
+
+# Or
+docker-compose up --build
+
+# Stop services
+npm run stop:docker
+```
+
+#### Production Docker
+
+```bash
+# Build production images
+docker-compose -f docker-compose.prod.yml up --build
+```
+
+## 🗄️ Database Setup
+
+### MongoDB Atlas (Recommended)
+
+1. **Create Cluster**
+   - Go to [MongoDB Atlas](https://cloud.mongodb.com)
+   - Create a free cluster
+   - Get connection string
+
+2. **Whitelist IPs**
+   - For development: `0.0.0.0/0`
+   - For production: Your server IPs
+
+3. **Create Database User**
+   - Database Access > Add New Database User
+   - Choose authentication method
+
+### Redis (Optional)
+
+For production caching, use:
+- **Redis Cloud** (managed)
+- **AWS ElastiCache**
+- **Google Cloud Memorystore**
+
+## 💳 Stripe Configuration
+
+1. **Get API Keys**
+   - Go to [Stripe Dashboard](https://dashboard.stripe.com)
+   - Get publishable key (frontend)
+   - Get secret key (backend)
+
+2. **Webhook Setup**
+   ```bash
+   # Install Stripe CLI
+   stripe listen --forward-to localhost:4001/api/payments/webhook
+   ```
+
+## 📧 Email Configuration
+
+### Gmail SMTP
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+```
+
+### SendGrid
+
+```env
+SMTP_HOST=smtp.sendgrid.net
+SMTP_PORT=587
+SMTP_USER=apikey
+SMTP_PASS=your-sendgrid-api-key
+```
+
+## 🔧 Environment Variables
 
 ### Backend (.env)
+
 ```env
 NODE_ENV=production
-PORT=5000
-MONGODB_URI=your_mongodb_atlas_connection_string
-JWT_SECRET=your_super_secret_jwt_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-EMAIL_HOST=smtp.gmail.com
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-FRONTEND_URL=https://your-frontend-domain.vercel.app
+PORT=4001
+MONGODB_URI=mongodb+srv://...
+REDIS_HOST=localhost
+REDIS_PORT=6379
+JWT_SECRET=your-super-secure-secret
+JWT_REFRESH_SECRET=your-refresh-secret
+JWT_RESET_SECRET=your-reset-secret
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+FRONTEND_URL=https://your-frontend.com
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
 ```
 
 ### Frontend (.env)
+
 ```env
-VITE_API_URL=https://your-backend-api.render.com/api
-VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+REACT_APP_API_URL=https://your-backend-api.com
+REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_...
 ```
+
+## 🚀 Post-Deployment
+
+### 1. Database Seeding
+
+```bash
+# Seed initial data
+npm run seed
+```
+
+### 2. Health Checks
+
+```bash
+# Backend health
+curl https://your-backend.com/api/health
+
+# Frontend check
+curl https://your-frontend.com
+```
+
+### 3. SSL Certificate
+
+- Vercel: Automatic
+- Render: Automatic
+- Netlify: Automatic
+- Custom: Use Let's Encrypt
+
+## 📊 Monitoring
+
+### Application Monitoring
+
+- **Vercel Analytics**: Built-in
+- **Render Metrics**: Dashboard
+- **Netlify Analytics**: Built-in
+
+### Error Tracking
+
+```bash
+# Install error tracking (optional)
+npm install @sentry/node @sentry/react
+```
+
+## 🔄 CI/CD Pipeline
+
+### GitHub Actions Example
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm run install:all
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Vercel
+        run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Build Failures**
+   ```bash
+   # Clear cache and rebuild
+   npm run clean
+   npm run install:all
+   npm run build
+   ```
+
+2. **Environment Variables**
+   - Check all required env vars are set
+   - Verify database connectivity
+   - Test Stripe keys
+
+3. **CORS Issues**
+   - Update `FRONTEND_URL` in backend
+   - Check CORS configuration
+
+### Logs
+
+```bash
+# Vercel logs
+vercel logs
+
+# Render logs
+# Check dashboard or use render CLI
+
+# Docker logs
+docker-compose logs
+```
+
+## 📞 Support
+
+For deployment issues:
+1. Check this guide
+2. Review platform-specific documentation
+3. Check application logs
+4. Verify environment configuration
+
+## 🔒 Security Checklist
+
+- [ ] Environment variables not in code
+- [ ] Database IP whitelisting
+- [ ] HTTPS enabled
+- [ ] CORS properly configured
+- [ ] Rate limiting enabled
+- [ ] Input validation active
+- [ ] Authentication working
+- [ ] Authorization implemented
+- [ ] Sensitive data encrypted
 
 ## 🚀 Quick Deployment
 
