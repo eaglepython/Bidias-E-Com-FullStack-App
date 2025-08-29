@@ -132,8 +132,8 @@ const ProductDetailPage: React.FC = () => {
   const fetchProductData = async () => {
     try {
       setLoading(true);
-  const response: any = await productAPI.getProduct(id!);
-  const { product, recommendations, relatedProducts } = response?.data?.data || {};
+      const response: any = await productAPI.getProduct(id!);
+      const { product, recommendations, relatedProducts } = response?.data || {};
       
       setProduct(product);
       setRecommendations(recommendations || []);

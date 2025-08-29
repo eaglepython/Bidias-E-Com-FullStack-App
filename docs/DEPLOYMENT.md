@@ -1,149 +1,182 @@
-# Render Deployment Guide
+# 🚀 Deployment Guide
 
-This guide explains how to deploy your e-commerce application to Render.
+This guide explains how to deploy your Bidias E-Commerce application to various platforms.
 
-## Prerequisites
+## 📋 Deployment Options
 
-1. A Render account (free tier available)
-2. Your code pushed to a GitHub repository
-3. MongoDB Atlas account for production database
+### 1. Vercel (Frontend)
+- **Best for**: Frontend deployment
+- **Free tier**: Available
+- **URL**: https://vercel.com
+
+### 2. Render (Backend)
+- **Best for**: Backend API deployment
+- **Free tier**: Available
+- **URL**: https://render.com
+
+### 3. Railway
+- **Best for**: Full-stack deployment
+- **Free tier**: Available
+- **URL**: https://railway.app
+
+## 🔧 Prerequisites
+
+1. GitHub repository with your code
+2. MongoDB Atlas account (for database)
+3. Stripe account (for payments)
 4. Environment variables configured
 
-## Deployment Steps
+## 🌐 Environment Variables
 
-### 1. Prepare Your Environment Variables
+### Backend (.env)
+```env
+NODE_ENV=production
+PORT=5000
+MONGODB_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_super_secret_jwt_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+EMAIL_HOST=smtp.gmail.com
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+FRONTEND_URL=https://your-frontend-domain.vercel.app
+```
 
-Create these environment variables in Render for your backend service:
+### Frontend (.env)
+```env
+VITE_API_URL=https://your-backend-api.render.com/api
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+```
 
-**Required:**
-- `MONGODB_URI` - Your MongoDB Atlas connection string
-- `JWT_SECRET` - Generate a secure random string
-- `JWT_REFRESH_SECRET` - Generate another secure random string  
-- `JWT_RESET_SECRET` - Generate another secure random string
-- `FRONTEND_URL` - Will be your frontend Render URL
-- `BACKEND_URL` - Will be your backend Render URL
+## 🚀 Quick Deployment
 
-**OAuth (Optional):**
-- `GOOGLE_CLIENT_ID` - From Google Cloud Console
-- `GOOGLE_CLIENT_SECRET` - From Google Cloud Console
-- `FACEBOOK_APP_ID` - From Facebook Developers
-- `FACEBOOK_APP_SECRET` - From Facebook Developers
+### Option 1: Vercel + Render (Recommended)
 
-**Email (Optional):**
-- `SMTP_USER` - Your email for sending notifications
-- `SMTP_PASSWORD` - App password for your email
-
-### 2. Deploy Backend
-
-1. Go to [Render Dashboard](https://dashboard.render.com/)
-2. Click "New +" → "Web Service"
+#### Step 1: Deploy Backend to Render
+1. Go to [render.com](https://render.com) and sign up
+2. Click "New" → "Web Service"
 3. Connect your GitHub repository
-4. Configure:
-   - **Name**: `your-app-backend`
-   - **Runtime**: `Node`
-   - **Build Command**: `cd backend && npm install && npm run build`
-   - **Start Command**: `cd backend && npm start`
-   - **Root Directory**: Leave empty (or set to root if needed)
-   - **Health Check Path**: `/api/health`
+4. Configure the service:
+   - **Name**: bidias-ecommerce-backend
+   - **Root Directory**: backend
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+5. Add environment variables
+6. Click "Create Web Service"
 
-5. Add environment variables (see list above)
-6. Deploy
+#### Step 2: Deploy Frontend to Vercel
+1. Go to [vercel.com](https://vercel.com) and sign up
+2. Click "New Project"
+3. Import your GitHub repository
+4. Configure the project:
+   - **Root Directory**: frontend
+   - **Build Settings**: Automatic
+5. Add environment variables
+6. Click "Deploy"
 
-### 3. Deploy Frontend
+### Option 2: Railway (Full-Stack)
 
-1. Click "New +" → "Static Site"
-2. Connect your GitHub repository  
-3. Configure:
-   - **Name**: `your-app-frontend`
-   - **Build Command**: `cd frontend && npm install && npm run build`
-   - **Publish Directory**: `frontend/build`
+1. Go to [railway.app](https://railway.app) and sign up
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Select your repository
+4. Railway will automatically detect and deploy both frontend and backend
+5. Add environment variables in the dashboard
 
-4. Add environment variable:
-   - `REACT_APP_API_URL` - Set to your backend service URL
+## 🔍 Testing Deployment
 
-### 4. Setup MongoDB Atlas
-
-1. Create a MongoDB Atlas account
-2. Create a new cluster (free tier available)
-3. Create a database user
-4. Whitelist Render's IP addresses (or use 0.0.0.0/0 for all IPs)
-5. Get your connection string and add it as `MONGODB_URI` in your backend service
-
-### 5. Update OAuth Redirect URIs
-
-After deployment, update your OAuth provider settings:
-
-**Google Cloud Console:**
-- Add `https://your-backend-service.onrender.com/auth/google/callback`
-
-**Facebook Developers:**
-- Add `https://your-backend-service.onrender.com/auth/facebook/callback`
-
-### 6. Seed Your Database
-
-After deployment, you can seed your database by running:
-
+### Frontend Tests
 ```bash
-# SSH into your backend service and run:
-npm run seed
+# Test local frontend
+cd frontend
+npm run build
+npm run preview
 ```
 
-Or create an API endpoint to trigger seeding.
-
-## Important Notes
-
-### Free Tier Limitations
-- Services sleep after 15 minutes of inactivity
-- 750 hours per month of uptime
-- First requests after sleep may be slow (cold starts)
-
-### Environment-Specific URLs
-The app automatically detects production environment and uses proper URLs for OAuth callbacks.
-
-### File Uploads
-Files are stored in `/tmp/uploads` which is ephemeral. For production, consider using cloud storage like AWS S3.
-
-### Performance
-- Enable caching where possible
-- Use CDN for static assets
-- Consider upgrading to paid plans for better performance
-
-## Troubleshooting
-
-### Common Issues:
-
-1. **Build Failures**: Check logs in Render dashboard
-2. **Environment Variables**: Ensure all required variables are set
-3. **Database Connection**: Verify MongoDB Atlas connection string and IP whitelist
-4. **OAuth Errors**: Ensure redirect URIs match exactly
-
-### Health Check
-Your app includes a health check endpoint at `/api/health` that verifies:
-- Database connection
-- Redis connection (if configured)
-- Basic service health
-
-## Manual Deployment Commands
-
-If you prefer manual deployment, you can use these commands:
-
+### Backend Tests
 ```bash
-# Build backend
-cd backend && npm run build
-
-# Build frontend  
-cd frontend && npm run build
-
-# Start production server
-cd backend && npm start
+# Test local backend
+cd backend
+npm test
 ```
 
-## Post-Deployment
+### API Endpoints to Test
+- `GET /api/products` - Product listing
+- `GET /api/products/:id` - Product details
+- `POST /api/auth/login` - User authentication
+- `POST /api/orders` - Order creation
 
-1. Test all functionality
-2. Monitor logs for errors
-3. Set up monitoring/alerting
-4. Configure custom domain (optional)
-5. Set up SSL certificate (automatic with Render)
+## 🐛 Troubleshooting
 
-Your application should now be live and accessible via the Render URLs!
+### Common Issues
+
+#### 1. Build Failures
+- Check that all dependencies are in `package.json`
+- Ensure Node.js version compatibility
+- Verify environment variables are set
+
+#### 2. Database Connection
+- Verify MongoDB Atlas connection string
+- Check network access rules
+- Ensure database user has correct permissions
+
+#### 3. Payment Integration
+- Verify Stripe keys are correct
+- Check webhook endpoints
+- Test with Stripe test cards
+
+#### 4. CORS Issues
+- Ensure `FRONTEND_URL` is correctly set
+- Check CORS configuration in backend
+
+## 📊 Monitoring
+
+### Vercel Analytics
+- Built-in performance monitoring
+- Real-time error tracking
+- Function execution logs
+
+### Render Logs
+- Application logs
+- Build logs
+- System metrics
+
+### Railway Metrics
+- CPU and memory usage
+- Request/response metrics
+- Database performance
+
+## 🔄 Updates and Maintenance
+
+### Updating Deployment
+1. Push changes to GitHub
+2. Vercel/Render will auto-deploy
+3. Monitor logs for any issues
+4. Test functionality after deployment
+
+### Database Migrations
+```bash
+# Run migrations if needed
+cd backend
+npm run migrate
+```
+
+## 📞 Support
+
+If you encounter issues:
+1. Check the logs in your deployment platform
+2. Verify environment variables
+3. Test locally first
+4. Check GitHub repository for updates
+
+## 🎯 Best Practices
+
+- Always test locally before deploying
+- Use environment variables for sensitive data
+- Monitor application logs regularly
+- Keep dependencies updated
+- Use proper error handling
+- Implement health checks
+
+---
+
+**Happy Deploying! 🚀**
