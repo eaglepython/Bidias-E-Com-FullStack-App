@@ -533,3 +533,4 @@ npm run seed
 **Built with ❤️ using modern web technologies**
 
 </div>
+# Bidias-E-Com-FullStack-App
