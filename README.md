@@ -159,6 +159,8 @@ This project represents the capstone achievement for the **NPower App Developmen
 ![Node.js](https://img.shields.io/badge/Node.js_18+-339933?style=flat-square&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=express&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3.8+-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=JSON%20web%20tokens&logoColor=white)
 ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=flat-square&logo=socket.io&logoColor=white)
 ![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=flat-square&logo=mongoose&logoColor=white)
@@ -189,8 +191,9 @@ This project represents the capstone achievement for the **NPower App Developmen
 
 ### 🏁 **Prerequisites**
 - ✅ **Node.js 18+** installed
+- ✅ **Python 3.8+** installed (for AI microservices)
 - ✅ **MongoDB** (local or MongoDB Atlas)
-- ✅ **Redis** (optional, for caching)
+- ✅ **Redis** (optional, for caching and analytics)
 - ✅ **Stripe Account** (for payments)
 - ✅ **Docker & Docker Compose** (recommended)
 
@@ -204,6 +207,10 @@ cd sophisticated-ecommerce-capstone
 
 # Install all dependencies (frontend + backend)
 npm run install:all
+
+# Install Python AI microservices dependencies
+pip install -r ai-services/analytics-engine/requirements.txt
+pip install -r ai-services/recommendation-engine/requirements.txt
 
 # Setup environment variables
 cp .env.production.example .env.production
@@ -228,10 +235,16 @@ npm run dev:docker
 
 #### **Development Mode**
 ```bash
-# Start both frontend and backend
+# 1. Start the AI Analytics Service (Python)
+python -m uvicorn ai-services.analytics-engine.main:app --reload --port 5000
+
+# 2. Start the Recommendation Engine Service (Python)
+python -m uvicorn ai-services.recommendation-engine.main:app --reload --port 5001
+
+# 3. Start both frontend and backend (Node.js/React)
 npm run dev
 
-# Or start individually:
+# Or start Node.js services individually:
 npm run dev:frontend  # Frontend on http://localhost:3003
 npm run dev:backend   # Backend on http://localhost:4001
 ```
@@ -272,10 +285,10 @@ sophisticated-ecommerce-capstone/
 │   │   ├── models/           # MongoDB models
 │   │   ├── routes/           # API routes
 │   │   ├── middleware/       # Custom middleware
-│   │   ├── services/         # Business logic
+│   │   ├── services/         # Business logic & AI integration
 │   │   ├── utils/            # Utility functions
 │   │   ├── config/           # Configuration files
-│   │   └── scripts/          # Database scripts
+│   │   └── scripts/          # Database & test scripts
 │   ├── Dockerfile           # Backend container config
 │   └── package.json         # Backend dependencies
 ├── frontend/                 # React frontend
@@ -291,6 +304,17 @@ sophisticated-ecommerce-capstone/
 │   ├── public/              # Public static files
 │   ├── Dockerfile          # Frontend container config
 │   └── package.json        # Frontend dependencies
+├── ai-services/             # Python AI microservices
+│   ├── analytics-engine/    # FastAPI analytics service
+│   │   ├── main.py         # FastAPI application
+│   │   ├── models/         # ML models and data processing
+│   │   ├── services/       # Analytics business logic
+│   │   └── requirements.txt # Python dependencies
+│   └── recommendation-engine/ # FastAPI recommendation engine
+│       ├── main.py         # FastAPI application
+│       ├── models/         # ML recommendation models
+│       ├── services/       # Recommendation algorithms
+│       └── requirements.txt # Python dependencies
 ├── docs/                    # Documentation
 ├── nginx/                   # Reverse proxy config
 ├── infrastructure/         # Infrastructure as code
@@ -342,6 +366,10 @@ SMTP_PASS=your_app_password
 NODE_ENV=production
 FRONTEND_URL=https://bidias-e-com-full-stack-app.netlify.app
 REACT_APP_API_URL=https://bidias-e-com-fullstack-app.onrender.com
+
+# AI Microservices
+ML_SERVICE_URL=http://localhost:5000
+RECOMMENDATION_ENGINE_URL=http://localhost:5001
 
 # OAuth Configuration
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -395,6 +423,14 @@ POST /api/payments/webhook        # Stripe webhook handler
 GET  /api/payments/methods        # Get payment methods
 ```
 
+#### **🤖 AI & Recommendations (Python Microservices)**
+```http
+POST /content-recommendations     # Get content-based recommendations (Analytics Engine)
+POST /recommendations            # Get personalized recommendations (Recommendation Engine)
+GET  /analytics/user-behavior    # User behavior analytics
+GET  /analytics/product-trends   # Product trend analysis
+```
+
 #### **📊 Health & System**
 ```http
 GET /api/health              # Application health status
@@ -420,6 +456,33 @@ GET /api/metrics             # System performance metrics
     "version": "2.0.0"
   }
 }
+```
+
+### 🤖 **Backend Integration with AI Services**
+
+The Node.js backend seamlessly integrates with Python AI microservices for advanced functionality:
+
+#### **🎯 Recommendation Engine Integration**
+1. **Environment Configuration**: Set `RECOMMENDATION_ENGINE_URL` in your backend `.env.production`
+2. **Service Integration**: Backend uses `src/services/recommendationEngineService.ts` to communicate with FastAPI microservice
+3. **API Endpoint**: Calls `/recommendations` endpoint on the Python service
+4. **Testing**: Use test script: `npx ts-node src/scripts/test-recommendation-engine.ts`
+
+#### **📈 Analytics Engine Integration**
+- **Real-time Analytics**: Python service processes user behavior and product trends
+- **Content Recommendations**: Advanced content-based filtering algorithms
+- **Performance Metrics**: Analytics engine provides insights for business intelligence
+
+```typescript
+// Example integration in backend service
+import { recommendationEngineService } from '../services/recommendationEngineService';
+
+// Get personalized recommendations for user
+const recommendations = await recommendationEngineService.getRecommendations({
+  userId: user.id,
+  productIds: recentlyViewed,
+  categories: userPreferences
+});
 ```
 
 ---
