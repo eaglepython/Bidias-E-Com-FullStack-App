@@ -306,14 +306,11 @@ sophisticated-ecommerce-capstone/
 │   └── package.json        # Frontend dependencies
 ├── ai-services/             # Python AI microservices
 │   ├── analytics-engine/    # FastAPI analytics service
+│   │   ├── __pycache__/    # Python cache directory
 │   │   ├── main.py         # FastAPI application
-│   │   ├── models/         # ML models and data processing
-│   │   ├── services/       # Analytics business logic
 │   │   └── requirements.txt # Python dependencies
 │   └── recommendation-engine/ # FastAPI recommendation engine
 │       ├── main.py         # FastAPI application
-│       ├── models/         # ML recommendation models
-│       ├── services/       # Recommendation algorithms
 │       └── requirements.txt # Python dependencies
 ├── docs/                    # Documentation
 ├── nginx/                   # Reverse proxy config
@@ -512,6 +509,8 @@ npm run docker:clean
 |---------|------|-------------|
 | Frontend | 3003 | React development server |
 | Backend | 4001 | Express API server |
+| AI Analytics | 5000 | Python FastAPI analytics engine |
+| AI Recommendations | 5001 | Python FastAPI recommendation engine |
 | MongoDB | 27017 | Database server |
 | Redis | 6379 | Cache server |
 | Nginx | 80, 443 | Reverse proxy (production) |
