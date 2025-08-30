@@ -10,21 +10,21 @@
       }
     },
     {
-      "src": "backend/src/server.ts",
+      "src": "backend/package.json",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["backend/dist/**"]
+        "includeFiles": ["backend/dist/**", "backend/.env*"]
       }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/src/server.ts"
+      "dest": "/backend/src/server.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "frontend/dist/index.html"
+      "dest": "/frontend/dist/$1"
     }
   ],
   "env": {
@@ -32,7 +32,10 @@
   },
   "functions": {
     "backend/src/server.ts": {
-      "includeFiles": "backend/dist/**"
+      "includeFiles": "backend/dist/**",
+      "maxDuration": 30
     }
-  }
+  },
+  "regions": ["iad1"],
+  "outputDirectory": "frontend/dist"
 }

@@ -11,10 +11,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 4000
+        value: 10000
       - key: MONGODB_URI
-        fromService:
-          type: pserv
+        fromDatabase:
           name: mongodb
           property: connectionString
       - key: JWT_SECRET
@@ -40,18 +39,37 @@ services:
         value: /tmp/uploads
       - key: MAX_FILE_SIZE
         value: 10MB
+      - key: REDIS_HOST
+        fromDatabase:
+          name: redis
+          property: host
+      - key: REDIS_PORT
+        fromDatabase:
+          name: redis
+          property: port
+      - key: REDIS_PASSWORD
+        fromDatabase:
+          name: redis
+          property: password
 
   # Frontend Static Site
   - type: web
     name: ecommerce-frontend
     runtime: static
+    plan: starter
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/build
-    pullRequestPreviewsEnabled: false
+    staticPublishPath: ./frontend/dist
+    pullRequestPreviewsEnabled: true
     headers:
       - path: /*
-        name: X-Robots-Tag
-        value: noindex
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
     routes:
       - type: rewrite
         source: /*
@@ -62,11 +80,12 @@ services:
           type: web
           name: ecommerce-backend
           property: host
+      - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
+        sync: false # Set this manually in Render dashboard
 
 databases:
   - name: mongodb
+    databaseName: bidias_ecommerce
     plan: starter
-    
-# Optional: Redis for caching (can be added later)
-# - name: redis
-#   plan: starter
+  - name: redis
+    plan: starter

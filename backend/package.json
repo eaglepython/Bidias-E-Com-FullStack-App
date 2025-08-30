@@ -17,6 +17,7 @@
     "format:check": "prettier --check src",
     "type-check": "tsc --noEmit",
     "seed": "tsx src/scripts/seed-products.ts",
+    "setup-users": "tsx src/scripts/setup-users.ts",
     "migrate": "tsx src/scripts/migrate.ts"
   },
   "dependencies": {
