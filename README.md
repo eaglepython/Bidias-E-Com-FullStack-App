@@ -48,7 +48,6 @@
 
 ---
 
-## 🎓 **NPower Capstone Project**
 
 <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 15px; color: white; margin: 20px 0;">
 
@@ -60,10 +59,6 @@ This project represents the capstone achievement for the **NPower App Developmen
 - **Program**: App Development Program
 - **Duration**: Intensive Full-Stack Development Training
 - **Focus**: Professional Software Development & Career Readiness
-
-**👨‍🏫 Instructor Recognition:**
-- **Javier Guerra** - Lead Instructor & Technical Mentor
-- **Casey Reyes** - Programming Instructor & Project Guide
 
 **🎖️ Achievement Goals:**
 - ✅ Complete Full-Stack E-Commerce Platform
@@ -843,3 +838,4 @@ This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE
 *"This project represents not just code, but a journey of learning, growth, and the pursuit of technical excellence."*
 
 </div>
+
