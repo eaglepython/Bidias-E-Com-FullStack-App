@@ -1,4 +1,4 @@
-# 🌟 Bidias E-Commerce FullStack Platform
+#  Bidias E-Commerce FullStack Platform
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 [![🚀 Repository](https://img.shields.io/badge/🚀%20Repository-View%20Code-00d4ff?style=for-the-badge&logoColor=white)](https://github.com/eaglepython/Bidias-E-Com-FullStack-App)
 [![💼 Professional](https://img.shields.io/badge/💼%20Built%20by-Joseph%20Bidias-ff6b35?style=for-the-badge)](mailto:bidias_consulting@outlook.com)
 [![🎓 NPower](https://img.shields.io/badge/🎓%20NPower-Capstone%20Project-success?style=for-the-badge)](https://www.npower.org/)
-[![⭐ Premium Quality](https://img.shields.io/badge/⭐%20Quality-Enterprise%20Grade-gold?style=for-the-badge)](https://github.com/eaglepython/Bidias-E-Com-FullStack-App)
+[![ Premium Quality](https://img.shields.io/badge/%20Quality-Enterprise%20Grade-gold?style=for-the-badge)](https://github.com/eaglepython/Bidias-E-Com-FullStack-App)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
